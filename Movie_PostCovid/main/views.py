@@ -1,3 +1,4 @@
+# main/views.py
 from rest_framework import viewsets, filters
 from .models import Movie, BoxOfficeMonthly
 from .serializers import MovieSerializer, BoxOfficeMonthlySerializer
@@ -6,7 +7,7 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Movie.objects.all().order_by('title')
     serializer_class = MovieSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title','distributor','producer','genre']
+    search_fields = ['title', 'distributor', 'producer', 'genre']
 
 class BoxOfficeMonthlyViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BoxOfficeMonthlySerializer
