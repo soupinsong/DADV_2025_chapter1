@@ -16,7 +16,9 @@ class BoxOfficeMonthlyViewSet(viewsets.ReadOnlyModelViewSet):
         y = self.request.query_params.get('year')
         m = self.request.query_params.get('month')
         t = self.request.query_params.get('title')
+        g = self.request.query_params.get('genre')
         if y: qs = qs.filter(year=int(y))
         if m: qs = qs.filter(month=int(m))
         if t: qs = qs.filter(movie__title__icontains=t)
+        if g: qs = qs.filter(movie__genre__icontains=g)
         return qs
