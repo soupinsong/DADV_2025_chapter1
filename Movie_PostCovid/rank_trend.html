@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>영화별 순위 변화</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2> 영화 랭킹 차트 </h2>
+    
+    <label for="movieIdInput">영화 번호: </label>
+    <input type="text" id="movieIdInput" value="1" placeholder="영화 ID (예: 1)">
+    <button id="searchBtn">조회</button>
+    <p>(*영화 번호를 입력해주세요)</p>
+
+    <canvas id="rankTrendChart"></canvas>
+
+    <script>
+        const ctx = document.getElementById('rankTrendChart');
+        let myChart; 
+
+        async function loadRankTrend(movieId) {
+            if (!movieId) {
+                alert("영화 ID를 입력하세요.");
+                return;
+            }
+
+            const url = `http://127.0.0.1:8000/api/movies/${movieId}/rank_trend/`;
+            console.log("API 호출:", url);
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) {
+                    alert("데이터를 불러오는 데 실패했습니다. 영화 ID를 확인하세요.");
+                    return;
+                }
+                const data = await res.json(); 
+
+                const labels = data.map(d => d.month); 
+                const ranks = data.map(d => d.rank);   
+
+                if (myChart) myChart.destroy(); 
+
+                myChart = new Chart(ctx, {
+                    type: 'line', 
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `영화 #${movieId} 순위 변화`,
+                            data: ranks,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                reverse: true, 
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+            } catch (e) {
+                console.error("차트 로드 중 오류:", e);
+            }
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const movieId = document.getElementById('movieIdInput').value;
+            loadRankTrend(movieId);
+        });
+
+        // loadRankTrend('1');
+    </script>
+</body>
+</html>
