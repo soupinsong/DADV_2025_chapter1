@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'Movie_PostCovid',
     'main',
-    'django_filters',
+    
 ]
 
 MIDDLEWARE = [
